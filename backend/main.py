@@ -19,7 +19,11 @@ app = FastAPI(
     description="AI-powered career agent with Gmail, Calendar, and Resume RAG tools",
 )
 
-cors_origins = json.loads(os.getenv("BACKEND_CORS_ORIGINS", '["http://localhost:3000"]'))
+cors_raw = os.getenv("BACKEND_CORS_ORIGINS", '["http://localhost:3000"]')
+try:
+    cors_origins = json.loads(cors_raw)
+except (json.JSONDecodeError, TypeError):
+    cors_origins = [o.strip() for o in cors_raw.split(",") if o.strip()]
 
 # In production (Render), also allow the Vercel frontend domain
 frontend_url = os.getenv("FRONTEND_URL")
