@@ -19,16 +19,24 @@ app = FastAPI(
     description="AI-powered career agent with Gmail, Calendar, and Resume RAG tools",
 )
 
-cors_raw = os.getenv("BACKEND_CORS_ORIGINS", '["http://localhost:3000"]')
+# -- CORS origins ----------------------------------------------------------
+# Always allow localhost (dev) and the production Vercel frontend.
+PRODUCTION_ORIGINS = [
+    "https://careerforge-tan.vercel.app",
+    "http://localhost:3000",
+]
+
+cors_raw = os.getenv("BACKEND_CORS_ORIGINS", "[]")
 try:
     cors_origins = json.loads(cors_raw)
 except (json.JSONDecodeError, TypeError):
     cors_origins = [o.strip() for o in cors_raw.split(",") if o.strip()]
 
-# In production (Render), also allow the Vercel frontend domain
+# Merge env-var origins with hard-coded production origins
 frontend_url = os.getenv("FRONTEND_URL")
-if frontend_url and frontend_url not in cors_origins:
-    cors_origins.append(frontend_url)
+for url in PRODUCTION_ORIGINS + ([frontend_url] if frontend_url else []):
+    if url and url not in cors_origins:
+        cors_origins.append(url)
 
 app.add_middleware(
     CORSMiddleware,
@@ -69,6 +77,12 @@ class HealthResponse(BaseModel):
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
     return HealthResponse(status="healthy", version="1.0.0")
+
+
+@app.get("/debug/cors")
+async def debug_cors():
+    """Temporary: show which CORS origins are configured."""
+    return {"cors_origins": cors_origins, "FRONTEND_URL": os.getenv("FRONTEND_URL"), "BACKEND_CORS_ORIGINS": os.getenv("BACKEND_CORS_ORIGINS")}
 
 
 @app.post("/agent/run", response_model=AgentResponse)
