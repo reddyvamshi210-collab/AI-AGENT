@@ -1,0 +1,30 @@
+# ─── Render.com Deployment ───────────────────────────────────────────────────
+# Render Blueprint: defines the backend web service
+# Deploy via: https://render.com/deploy → connect repo → auto-detect this file
+
+services:
+  - type: web
+    name: careerforge-api
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false  # e.g. https://careerforge-api.onrender.com/auth/google/callback
+      - key: BACKEND_CORS_ORIGINS
+        sync: false  # e.g. ["https://careerforge.vercel.app"]
+      - key: BACKEND_SECRET_KEY
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false  # e.g. https://careerforge.vercel.app
+      - key: PYTHON_VERSION
+        value: "3.12.0"
