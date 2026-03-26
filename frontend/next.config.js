@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove "standalone" for Vercel — Vercel handles builds natively
   images: {
     domains: [],
   },

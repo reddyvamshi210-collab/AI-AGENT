@@ -1,5 +1,5 @@
-# ─── Render.com Deployment ───────────────────────────────────────────────────
-# Render Blueprint: defines the backend web service
+# ─── Render.com Deployment (Backend only) ────────────────────────────────────
+# Frontend is deployed on Vercel separately.
 # Deploy via: https://render.com/deploy → connect repo → auto-detect this file
 
 services:
@@ -12,6 +12,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
       - key: OPENAI_API_KEY
         sync: false  # Set manually in Render dashboard
       - key: GOOGLE_CLIENT_ID
@@ -26,5 +28,3 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         sync: false  # e.g. https://careerforge.vercel.app
-      - key: PYTHON_VERSION
-        value: "3.12.0"
