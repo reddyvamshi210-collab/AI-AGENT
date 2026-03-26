@@ -3,9 +3,5 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "installCommand": "npm install",
-  "root": "frontend",
-  "env": {
-    "NEXT_PUBLIC_API_URL": "@careerforge-api-url"
-  }
+  "installCommand": "npm install"
 }
