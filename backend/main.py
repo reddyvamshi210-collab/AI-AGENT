@@ -7,7 +7,7 @@ import os
 import json
 from typing import Optional
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"), override=False)
 
 from agent.engine import CareerForgeAgent
 from auth.google_auth import google_auth_router, get_google_credentials
